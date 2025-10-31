@@ -155,6 +155,20 @@ spec:
 {{- if .Sizing.Adaptor.NotEmpty -}}
         {{- template "resources" .Sizing.Adaptor -}}
 {{- end }}
+{{- if .Tolerations }}
+      tolerations:
+{{- range .Tolerations }}
+      - key: {{ .Key }}
+        operator: {{ .Operator }}
+{{- if .Value }}
+        value: {{ .Value }}
+{{- end }}
+        effect: {{ .Effect }}
+{{- if .TolerationSeconds }}
+        tolerationSeconds: {{ .TolerationSeconds }}
+{{- end }}
+{{- end }}
+{{- end }}
       serviceAccount: {{ .ServiceAccount }}
       volumes:
       - emptyDir: {}

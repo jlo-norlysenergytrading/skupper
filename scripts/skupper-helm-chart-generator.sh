@@ -41,6 +41,14 @@ routerImage: quay.io/skupper/skupper-router:$ROUTER_VERSION
 # available options: cluster, namespace
 scope: cluster
 
+controller:
+  tolerations: []
+  # Example:
+  # tolerations:
+  # - key: "node-role.kubernetes.io/control-plane"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+
 EOF
 
 cat <<EOF >"$TEMPLATES_DIR/NOTES.txt"
@@ -100,6 +108,25 @@ fi
 
 # Substitute "namespace: <name>" with "namespace: {{ .Release.Namespace }}"
 sed -i 's/namespace: [a-zA-Z0-9.-]*/namespace: {{ .Release.Namespace }}/g' "$CLUSTER_TEMPLATE"
+
+# Inject tolerations template in the correct location (after securityContext, before containers)
+# For cluster scope
+sed -i '/securityContext:/,/type: RuntimeDefault/ {
+  /type: RuntimeDefault/a\
+      {{- with .Values.controller.tolerations }}\
+      tolerations:\
+        {{- toYaml . | nindent 8 }}\
+      {{- end }}
+}' "$CLUSTER_TEMPLATE"
+
+# For namespace scope
+sed -i '/securityContext:/,/type: RuntimeDefault/ {
+  /type: RuntimeDefault/a\
+      {{- with .Values.controller.tolerations }}\
+      tolerations:\
+        {{- toYaml . | nindent 8 }}\
+      {{- end }}
+}' "$NAMESPACE_TEMPLATE"
 
 sed -i -E 's|quay.io/skupper/controller:[a-zA-Z0-9.-]*|{{ .Values.controllerImage }}|' "$CLUSTER_TEMPLATE"
 sed -i -E 's|quay.io/skupper/controller:[a-zA-Z0-9.-]*|{{ .Values.controllerImage }}|' "$NAMESPACE_TEMPLATE"

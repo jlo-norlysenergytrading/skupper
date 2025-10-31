@@ -52,6 +52,7 @@ type Controller struct {
 	attachableConnectors map[string]*skupperv2alpha1.AttachedConnector
 	log                  *slog.Logger
 	namespaces           *NamespaceConfig
+	Toleration           []corev1.Toleration
 }
 
 func skupperRouterConfig() internalinterfaces.TweakListOptionsFunc {

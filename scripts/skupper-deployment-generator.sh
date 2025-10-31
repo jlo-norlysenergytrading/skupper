@@ -113,6 +113,18 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+EOF
+
+if [ "$FOR_CHART" = "true" ]; then
+    cat << 'EOF'
+      {{- with .Values.controller.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+EOF
+fi
+
+cat << EOF
       containers:
         - name: controller
           image: ${SKUPPER_CONTROLLER_IMAGE}
@@ -175,6 +187,18 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+EOF
+
+if [ "$FOR_CHART" = "true" ]; then
+    cat << 'EOF'
+      {{- with .Values.controller.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+EOF
+fi
+
+cat << EOF
       containers:
         - name: controller
           image: ${SKUPPER_CONTROLLER_IMAGE}

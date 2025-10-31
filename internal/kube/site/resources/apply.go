@@ -7,15 +7,15 @@ import (
 	"fmt"
 	"strconv"
 
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	"sigs.k8s.io/yaml"
-
 	skuppertypes "github.com/skupperproject/skupper/api/types"
 	"github.com/skupperproject/skupper/internal/images"
 	internalclient "github.com/skupperproject/skupper/internal/kube/client"
 	"github.com/skupperproject/skupper/internal/kube/resource"
 	"github.com/skupperproject/skupper/internal/kube/site/sizing"
 	skupperv2alpha1 "github.com/skupperproject/skupper/pkg/apis/skupper/v2alpha1"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"sigs.k8s.io/yaml"
 )
 
 //go:embed skupper-router-deployment.yaml
@@ -68,6 +68,7 @@ type CoreParams struct {
 	Labels             map[string]string
 	Annotations        map[string]string
 	EnableAntiAffinity bool
+	Tolerations        []corev1.Toleration
 }
 
 func (p *CoreParams) setLabelsAndAnnotations(labelling Labelling, namespace string, name string, kind string) *CoreParams {
@@ -162,6 +163,7 @@ func getCoreParams(site *skupperv2alpha1.Site, group string, size sizing.Sizing)
 		Sizing:             size,
 		Labels:             map[string]string{},
 		EnableAntiAffinity: enableAntiAffinity(site),
+		Tolerations:        getTolerations(site),
 	}
 }
 
@@ -188,4 +190,8 @@ func getValueAsBool(settings map[string]string, key string) bool {
 		return bval
 	}
 	return false
+}
+
+func getTolerations(site *skupperv2alpha1.Site) []corev1.Toleration {
+	return site.Spec.GetTolerations()
 }

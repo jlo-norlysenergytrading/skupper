@@ -194,12 +194,13 @@ type SiteList struct {
 }
 
 type SiteSpec struct {
-	ServiceAccount string            `json:"serviceAccount,omitempty"`
-	LinkAccess     string            `json:"linkAccess,omitempty"`
-	DefaultIssuer  string            `json:"defaultIssuer,omitempty"`
-	Edge           bool              `json:"edge,omitempty"`
-	HA             bool              `json:"ha,omitempty"`
-	Settings       map[string]string `json:"settings,omitempty"`
+	ServiceAccount string              `json:"serviceAccount,omitempty"`
+	LinkAccess     string              `json:"linkAccess,omitempty"`
+	DefaultIssuer  string              `json:"defaultIssuer,omitempty"`
+	Edge           bool                `json:"edge,omitempty"`
+	HA             bool                `json:"ha,omitempty"`
+	Settings       map[string]string   `json:"settings,omitempty"`
+	Tolerations    []corev1.Toleration `json:"tolerations,omitempty"`
 }
 
 func (s *SiteSpec) GetServiceAccount() string {
@@ -564,6 +565,9 @@ func (l *Link) IsConfigured() bool {
 func (l *Link) IsReady() bool {
 	return meta.IsStatusConditionTrue(l.Status.Conditions, CONDITION_TYPE_CONFIGURED) &&
 		meta.IsStatusConditionTrue(l.Status.Conditions, CONDITION_TYPE_OPERATIONAL)
+}
+func (s *SiteSpec) GetTolerations() []corev1.Toleration {
+	return s.Tolerations
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
