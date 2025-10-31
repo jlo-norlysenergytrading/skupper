@@ -92,6 +92,49 @@ spec:
                   type: object
                   additionalProperties:
                     type: string
+                tolerations:
+                  description: |-
+                    Tolerations allow router pods to be scheduled on nodes with
+                    matching taints. This is useful for dedicating nodes to
+                    Skupper or avoiding certain nodes.
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        description: The taint key that the toleration applies to.
+                        type: string
+                      operator:
+                        description: |-
+                          Operator represents a key's relationship to the value.
+                          Valid operators are Exists and Equal. Defaults to Equal.
+                        type: string
+                        enum:
+                          - Exists
+                          - Equal
+                      value:
+                        description: |-
+                          The taint value the toleration matches to. If the
+                          operator is Exists, the value should be empty.
+                        type: string
+                      effect:
+                        description: |-
+                          Effect indicates the taint effect to match. Empty means
+                          match all taint effects. Valid effects are NoSchedule,
+                          PreferNoSchedule and NoExecute.
+                        type: string
+                        enum:
+                          - NoSchedule
+                          - PreferNoSchedule
+                          - NoExecute
+                      tolerationSeconds:
+                        description: |-
+                          TolerationSeconds represents the period of time the
+                          toleration tolerates the taint. Only valid when effect
+                          is NoExecute. Zero and negative values will be treated
+                          as 0 (tolerate immediately).
+                        type: integer
+                        format: int64
             status:
               type: object
               properties:
