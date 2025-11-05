@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  skupper:
+  - apiVersion: v2
+    appVersion: v2-dev
+    created: "2025-11-05T17:29:13.018030574+01:00"
+    description: Helm chart for setting up Skupper.
+    digest: 3039913d3a9ccdf58543797d947c4de269059ab4eedfaa06620cdead22026da4
+    name: skupper
+    urls:
+    - https://jlo-norlysenergytrading.github.io/skupper/skupper-0.1.0-dev.tgz
+    version: 0.1.0-dev
+generated: "2025-11-05T17:29:12.988478801+01:00"
